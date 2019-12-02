@@ -183,7 +183,7 @@ class DQN(OffPolicyRLModel):
 
             episode_rewards = [0.0]
             episode_successes = []
-            obs = self.env.reset()
+            obs = yield
             reset = True
             self.episode_reward = np.zeros((1,))
 
@@ -214,7 +214,10 @@ class DQN(OffPolicyRLModel):
                     action = self.act(np.array(obs)[None], update_eps=update_eps, **kwargs)[0]
                 env_action = action
                 reset = False
-                new_obs, rew, done, info = self.env.step(env_action)
+                # Old
+                # new_obs, rew, done, info = self.env.step(env_action)
+                # New
+                new_obs, rew, done, info = yield env_action
                 # Store transition in the replay buffer.
                 self.replay_buffer.add(obs, action, rew, new_obs, float(done))
                 obs = new_obs
@@ -231,7 +234,7 @@ class DQN(OffPolicyRLModel):
                     if maybe_is_success is not None:
                         episode_successes.append(float(maybe_is_success))
                     if not isinstance(self.env, VecEnv):
-                        obs = self.env.reset()
+                        obs = yield
                     episode_rewards.append(0.0)
                     reset = True
 
