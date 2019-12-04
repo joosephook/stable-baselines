@@ -176,8 +176,14 @@ class BaseRLModel(ABC):
                 self.env.seed(seed)
             # Seed the action space
             # useful when selecting random actions
-            self.env.action_space.seed(seed)
-        self.action_space.seed(seed)
+            try:
+                self.env.action_space.seed(seed)
+            except AttributeError:
+                pass
+        try:
+            self.action_space.seed(seed)
+        except AttributeError:
+            pass
 
     def _setup_learn(self):
         """
