@@ -106,7 +106,7 @@ setup(name='stable_baselines',
       packages=[package for package in find_packages()
                 if package.startswith('stable_baselines')],
       install_requires=[
-          'gym[atari,classic_control]>=0.10.9',
+          'gym[atari,classic_control]==0.10.9',
           'scipy',
           'joblib',
           'cloudpickle>=0.5.5',
