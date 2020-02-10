@@ -168,7 +168,9 @@ class DQN(OffPolicyRLModel):
                                                     initial_p=self.prioritized_replay_beta0,
                                                     final_p=1.0)
             else:
-                self.replay_buffer = ReplayBuffer(self.buffer_size)
+                if self.replay_buffer is None:
+                    self.replay_buffer = ReplayBuffer(self.buffer_size)
+
                 self.beta_schedule = None
 
             if replay_wrapper is not None:
@@ -177,9 +179,10 @@ class DQN(OffPolicyRLModel):
 
 
             # Create the schedule for exploration starting from 1.
-            self.exploration = LinearSchedule(schedule_timesteps=int(self.exploration_fraction * total_timesteps),
-                                              initial_p=1.0,
-                                              final_p=self.exploration_final_eps)
+            if self.exploration is None:
+                self.exploration = LinearSchedule(schedule_timesteps=int(self.exploration_fraction * total_timesteps),
+                                                  initial_p=1.0,
+                                                  final_p=self.exploration_final_eps)
 
             episode_rewards = [0.0]
             episode_successes = []
