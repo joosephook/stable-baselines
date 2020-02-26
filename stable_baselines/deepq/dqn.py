@@ -97,6 +97,7 @@ class DQN(OffPolicyRLModel):
         self.params = None
         self.summary = None
         self.episode_reward = None
+        self.optimizer = None
 
         if _init_setup_model:
             self.setup_model()
@@ -125,13 +126,13 @@ class DQN(OffPolicyRLModel):
                 self.set_random_seed(self.seed)
                 self.sess = tf_util.make_session(num_cpu=self.n_cpu_tf_sess, graph=self.graph)
 
-                optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
+                self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
 
                 self.act, self._train_step, self.update_target, self.step_model = deepq.build_train(
                     q_func=partial(self.policy, **self.policy_kwargs),
                     ob_space=self.observation_space,
                     ac_space=self.action_space,
-                    optimizer=optimizer,
+                    optimizer=self.optimizer,
                     gamma=self.gamma,
                     grad_norm_clipping=10,
                     param_noise=self.param_noise,
